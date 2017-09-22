@@ -12,7 +12,7 @@ import hashlib
 import hmac
 import base64
 import time
-#l
+
 class BitfinexREST:
 
 	def __init__ (self):
