@@ -16,8 +16,8 @@ import time
 class BitfinexREST:
 
 	def __init__ (self):
-		self.key = None
-		self.secret = None
+		self.public_key = None
+		self.secret_key = None
 		self.base = 'https://api.bitfinex.com'
 		self.ver = '/v1/'
 		self.auth_data = 0
@@ -31,40 +31,34 @@ class BitfinexREST:
 		keys = f.read()
 		array = keys.split("\n")
 		# store key + secret
-		self.key = array[0]
-		self.secret = array[1]
+		self.public_key = array[0]
+		self.secret_key = array[1]
 
 	"""
 	Bitfinex authentication
 	"""
 	def auth(self, endpoint):
-		# grab URL
+		# create param obj
 		url = self.base + self.ver + endpoint
-		# generate nonce
 		nonce = str(int(time.time()) * 1000)
-		# create param object
-		param_obj = {
-			'nonce': nonce,
-			'url': url
-		}
-		# json encode param obj
+		param_obj = { 'nonce': nonce, 'url': url }
+
+		# create payload: param obj -> json encode -> base64 encode
 		json_encoded = json.dumps(param_obj)
-		print("json = {}".format(json_encoded))
-		# base64 encode json obj
 		payload = base64.b64encode(json_encoded.encode())
-		print("payload = {}".format(payload))
 
-		# create signature
-		signature = None
+		# initialise HMAC obj to verify integrity, 
+		h = hmac.new(self.secret_key.encode(), payload, hashlib.sha384)
+		signature = h.hexdigest()
 
-		# create header data
+		# create request header
 		headers = {
-			'X-BFX-APIKEY': self.key,			# API Public key
-			'X-BFX-PAYLOAD': 'authentication',	# Payload = Params obj -> JSON encoded -> Base64 encoded
+			'X-BFX-APIKEY': self.public_key,	# Public key
+			'X-BFX-PAYLOAD': payload,			# Payload = Params obj -> JSON encoded -> Base64 encoded
 			'X-BFX-SIGNATURE': signature		# Signature = hex digest of HMAC-SHA384 hash(payload, api-secret)
 		}
 
-		return url, {'headers': headers}	# return full URL + HEADER obj
+		return url, {'headers': headers}
 
 	"""
 	POST method for auth calls
@@ -98,8 +92,8 @@ if __name__ == "__main__":
 	b.auth('account_infos')
 
 	####### test key + secret
-	print(b.key)
-	print(b.secret)
+	print(b.public_key)
+	print(b.secret_key)
 	#######
 
 
@@ -123,7 +117,6 @@ if __name__ == "__main__":
 	#json_data = response.json()
 	#print(json_data[2]['amount'])
 
-print("End of program")
 
 
 
