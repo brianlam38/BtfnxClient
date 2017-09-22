@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-# Analysing Cryptocurrency Trade Performance
+# Unofficial Bitfinex REST client
 # 
 # Author: Brian Lam
 # Platforms: [ Bitfinex ]
@@ -15,25 +15,56 @@ class BitfinexREST:
 	def __init__ (self):
 		self.key = None
 		self.secret = None
-		self.url = 'https://api.bitfinex.com'
-		self.ver = '/v1'
+		self.base = 'https://api.bitfinex.com'
+		self.ver = '/v1/'
 		self.auth_data = 0
 
-	# Grab keys from filepath
+	"""
+	Grab keys from user provided filepath
+	"""
 	def addKeys(self, path):
+		# open file
 		f = open(path, 'r')
 		keys = f.read()
 		array = keys.split("\n")
-		# add to instance
+		# store key + secret
 		self.key = array[0]
 		self.secret = array[1]
 
-	# Bitfinex authentication
-	def auth(self, key, secret, url, ver):
+	"""
+	Bitfinex authentication
+	"""
+	def auth(self, param):
+		# grab URL
+		url = self.base + self.ver + param
+		###
+		print(url)
+		###
+		# create signature
+		signature = None
+		# create header data
+		headers = {
+			'X-BFX-APIKEY': self.key,
+			"X-BFX-SIGNATURE": signature,
+			"X-BFX-PAYLOAD": 'authentication'
 
+		}
+		return url, {'headers': headers}
+
+	"""
+	POST method for auth calls
+	"""
+	def post(self, param):
+		print("POST call")
+		auth(param)
 		return None
 
-
+	"""
+	GET method for public calls
+	"""
+	def get(self, param):
+		print("GET call")
+		return None
 
 class userData:
 
@@ -64,22 +95,20 @@ if __name__ == "__main__":
 	# init Bitfinex restAPI
 	b = BitfinexREST()
 
-	# check correct usage
+	# check program usage
 	if len(sys.argv) < 2:
 		print("Usage: Bitfinex.py key.txt")
 		exit()
 
-	# grab filepath, keys and add to client object
+	# add keys to client object
 	KEY_SECRET_PATH = sys.argv[1]
 	b.addKeys(KEY_SECRET_PATH);
+	b.auth('account_infos')
 
 	####### test key + secret
 	print(b.key)
 	print(b.secret)
 	#######
-
-
-
 
 
 
