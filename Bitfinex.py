@@ -13,6 +13,9 @@ import hmac
 import base64
 import time
 
+# test module
+import Tests as T
+
 class BitfinexREST:
 
 	def __init__ (self):
@@ -97,6 +100,9 @@ class BitfinexREST:
 
 if __name__ == "__main__":
 
+	# checking test module
+	T.test()
+
 	# init Bitfinex restAPI
 	b = BitfinexREST()
 
@@ -106,8 +112,8 @@ if __name__ == "__main__":
 		exit()
 
 	# TICKER: get IOTA/USD pair state
-	data = b.get(url)
-	print(json.dumps(data, indent=4))
+	#data = b.get(url)
+	#print(json.dumps(data, indent=4))
 
 	# add keys to instance
 	KEY_SECRET_PATH = sys.argv[1]
@@ -115,8 +121,6 @@ if __name__ == "__main__":
 
 	# generate url and request header
 	request, headers = b.auth("account_infos", b.nonce)
-	#print("url = {}".format(url))
-	#print("headers = {}".format(headers))
 
 	####### test nonce, public, secret
 	print(b.nonce)
@@ -130,19 +134,6 @@ if __name__ == "__main__":
 	response = b.post(request, headers)
 	print(response)
 
-
-	#headers = { "X-BFX-APIKEY": "../bitfinex.txt", "X-BFX-PAYLOAD": "../bitfinex.txt", "X-BFX-SIGNATURE": "../bitfinex.txt"}
-	#response = requests.post('https://api.bitfinex.com/v1/account_infos', headers)
-	#json_data = response.json()
-	#print(json_data)
-	#print(json.dumps(json_data, indent=4))
-
-
-	# get and print Btfnx balance info
-	#b = Bitfinex(key_file='../bitfinex.txt')	
-	#response = b.balance()
-	#json_data = response.json()
-	#print(json_data[2]['amount'])
 
 
 

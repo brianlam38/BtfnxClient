@@ -5,7 +5,6 @@
 # Author: Brian Lam
 # Platforms: [ Bitfinex ]
 
-
 def test():
-	print("Hello this is a test")
+	print("testing module")
 
