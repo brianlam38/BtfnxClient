@@ -38,26 +38,33 @@ class BitfinexREST:
 	Bitfinex authentication
 	"""
 	def auth(self, endpoint):
-		
 		# grab URL
 		url = self.base + self.ver + endpoint
-		print(url)
-
 		# generate nonce
 		nonce = str(int(time.time()) * 1000)
-		print("nonce = {}".format(nonce))
+		# create param object
+		param_obj = {
+			'nonce': nonce,
+			'url': url
+		}
+		# json encode param obj
+		json_encoded = json.dumps(param_obj)
+		print("json = {}".format(json_encoded))
+		# base64 encode json obj
+		payload = base64.b64encode(json_encoded.encode())
+		print("payload = {}".format(payload))
 
-		# create payload
-		payload = None
 		# create signature
 		signature = None
+
 		# create header data
 		headers = {
 			'X-BFX-APIKEY': self.key,			# API Public key
-			"X-BFX-PAYLOAD": 'authentication',	# Payload = Params obj -> JSON encoded -> Base64 encoded
-			"X-BFX-SIGNATURE": signature		# Signature = hex digest of HMAC-SHA384 hash(payload, api-secret)
+			'X-BFX-PAYLOAD': 'authentication',	# Payload = Params obj -> JSON encoded -> Base64 encoded
+			'X-BFX-SIGNATURE': signature		# Signature = hex digest of HMAC-SHA384 hash(payload, api-secret)
 		}
-		return url, {'headers': headers}
+
+		return url, {'headers': headers}	# return full URL + HEADER obj
 
 	"""
 	POST method for auth calls
