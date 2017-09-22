@@ -8,7 +8,10 @@
 import requests
 import json
 import sys
-
+import hashlib
+import hmac
+import base64
+import time
 
 class BitfinexREST:
 
@@ -22,7 +25,7 @@ class BitfinexREST:
 	"""
 	Grab keys from user provided filepath
 	"""
-	def addKeys(self, path):
+	def add_keys(self, path):
 		# open file
 		f = open(path, 'r')
 		keys = f.read()
@@ -34,20 +37,25 @@ class BitfinexREST:
 	"""
 	Bitfinex authentication
 	"""
-	def auth(self, param):
+	def auth(self, endpoint):
+		
 		# grab URL
-		url = self.base + self.ver + param
-		###
+		url = self.base + self.ver + endpoint
 		print(url)
-		###
+
+		# generate nonce
+		nonce = str(int(time.time()) * 1000)
+		print("nonce = {}".format(nonce))
+
+		# create payload
+		payload = None
 		# create signature
 		signature = None
 		# create header data
 		headers = {
-			'X-BFX-APIKEY': self.key,
-			"X-BFX-SIGNATURE": signature,
-			"X-BFX-PAYLOAD": 'authentication'
-
+			'X-BFX-APIKEY': self.key,			# API Public key
+			"X-BFX-PAYLOAD": 'authentication',	# Payload = Params obj -> JSON encoded -> Base64 encoded
+			"X-BFX-SIGNATURE": signature		# Signature = hex digest of HMAC-SHA384 hash(payload, api-secret)
 		}
 		return url, {'headers': headers}
 
@@ -66,29 +74,6 @@ class BitfinexREST:
 		print("GET call")
 		return None
 
-class userData:
-
-	def __init__ (self):
-		self.balance = 0
-		self.profit = 0
-
-	def initUserData(self):
-		return None
-		# update userData instance
-
-	def setBalance(self):
-		return None
-		# set curr balance
-
-	def setProfitN(self):
-		return None
-		# set profit Numeric
-
-	def setProfitP(self):
-		return None
-		# set profit Percentage
-
-
 
 if __name__ == "__main__":
 
@@ -102,7 +87,7 @@ if __name__ == "__main__":
 
 	# add keys to client object
 	KEY_SECRET_PATH = sys.argv[1]
-	b.addKeys(KEY_SECRET_PATH);
+	b.add_keys(KEY_SECRET_PATH);
 	b.auth('account_infos')
 
 	####### test key + secret
