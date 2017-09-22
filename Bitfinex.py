@@ -53,7 +53,8 @@ class BitfinexREST:
 		request = self.ver + endpoint
 		param_obj = {
 			'nonce': nonce,
-			'request': request
+			'request': request,
+			'currency': 'iot'
 		}
 
 		# create payload: param obj -> json encode -> base64 encode
@@ -92,6 +93,32 @@ class BitfinexREST:
 		json = response.json()
 		return json
 
+class Client:
+
+	def __init__ (self):
+		self.temp = None
+
+	# return past trades
+	# @param start: start time
+	# 		   end: end time
+	def get_past_trades(self, start, end):
+		return None
+
+	# view user trading fees
+	def get_balance(self, currency):
+		return None
+
+	# view user withdrawal fees
+	def get_fees(self):
+		return None
+
+	# return user deposit address
+	def get_deposit_addr(self):
+	 	return None
+
+	# return user wallet balance
+	def get_balance(self, wallet_type, currency):
+		return None
 
 
 ################
@@ -99,9 +126,6 @@ class BitfinexREST:
 ################
 
 if __name__ == "__main__":
-
-	# checking test module
-	T.test()
 
 	# init Bitfinex restAPI
 	b = BitfinexREST()
@@ -120,22 +144,14 @@ if __name__ == "__main__":
 	b.add_keys(KEY_SECRET_PATH)
 
 	# generate url and request header
-	request, headers = b.auth("account_infos", b.nonce)
-
-	####### test nonce, public, secret
-	print(b.nonce)
-	print(b.public_key)
-	print(b.secret_key)
-	#######
-
-
+	request, headers = b.auth("history", b.nonce)
 
 	# REST AUTHENTICATED ENDPOINTS
-	response = b.post(request, headers)
-	print(response)
+	data = b.post(request, headers)
+	print(json.dumps(data, indent=4))
 
-
-
+	# passing client obj to test module
+	T.test(b)
 
 
 

@@ -5,6 +5,12 @@
 # Author: Brian Lam
 # Platforms: [ Bitfinex ]
 
-def test():
+def test(client):
+	b = client
 	print("testing module")
+	####### test nonce, public, secret
+	print(b.nonce)
+	print(b.public_key)
+	print(b.secret_key)
+	#######
 
