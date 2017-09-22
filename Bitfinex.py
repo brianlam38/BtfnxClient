@@ -34,20 +34,27 @@ class BitfinexREST:
 		self.public_key = array[0]
 		self.secret_key = array[1]
 
+	""" 
+	Generate nonce
+	"""
+	def nonce(self):
+		nonce = str(int(time.time()) * 1000)
+		return nonce
+
 	"""
 	Bitfinex authentication
 	"""
-	def auth(self, endpoint):
+	def auth(self, endpoint, nonce):
 		# create param obj
+		nonce = self.nonce()
 		url = self.base + self.ver + endpoint
-		nonce = str(int(time.time()) * 1000)
 		param_obj = { 'nonce': nonce, 'url': url }
 
 		# create payload: param obj -> json encode -> base64 encode
 		json_encoded = json.dumps(param_obj)
 		payload = base64.b64encode(json_encoded.encode())
 
-		# initialise HMAC obj to verify integrity, 
+		# initialise HMAC obj to verify integrity, set signature
 		h = hmac.new(self.secret_key.encode(), payload, hashlib.sha384)
 		signature = h.hexdigest()
 
@@ -86,12 +93,17 @@ if __name__ == "__main__":
 		print("Usage: Bitfinex.py key.txt")
 		exit()
 
-	# add keys to client object
+	# add keys to instance
 	KEY_SECRET_PATH = sys.argv[1]
-	b.add_keys(KEY_SECRET_PATH);
-	b.auth('account_infos')
+	b.add_keys(KEY_SECRET_PATH)
 
-	####### test key + secret
+	# generate nonce
+
+	# generate url and request header
+	url, headers = b.auth('account_infos', b.nonce)
+
+	####### test nonce, public, secret
+	print(b.nonce)
 	print(b.public_key)
 	print(b.secret_key)
 	#######

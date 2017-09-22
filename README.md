@@ -1,2 +1,3 @@
-# TradePerformance
-Tracking trade performance across cryptocurrency exchanges.
+# BtfnxClient
+
+An unofficial Bitfinex REST API Client
