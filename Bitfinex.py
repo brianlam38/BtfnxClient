@@ -47,8 +47,11 @@ class BitfinexREST:
 	def auth(self, endpoint, nonce):
 		# create param obj
 		nonce = self.nonce()
-		url = self.base + self.ver + endpoint
-		param_obj = { 'nonce': nonce, 'url': url }
+		request = self.ver + endpoint
+		param_obj = {
+			'nonce': nonce,
+			'request': request
+		}
 
 		# create payload: param obj -> json encode -> base64 encode
 		json_encoded = json.dumps(param_obj)
@@ -60,28 +63,37 @@ class BitfinexREST:
 
 		# create request header
 		headers = {
-			'X-BFX-APIKEY': self.public_key,	# Public key
-			'X-BFX-PAYLOAD': payload,			# Payload = Params obj -> JSON encoded -> Base64 encoded
-			'X-BFX-SIGNATURE': signature		# Signature = hex digest of HMAC-SHA384 hash(payload, api-secret)
+			"X-BFX-APIKEY": self.public_key,	# Public key
+			"X-BFX-PAYLOAD": payload,			# Payload = Params obj -> JSON encoded -> Base64 encoded
+			"X-BFX-SIGNATURE": signature		# Signature = hex digest of HMAC-SHA384 hash(payload, api-secret)
 		}
 
-		return url, {'headers': headers}
+		return request, headers
 
 	"""
-	POST method for auth calls
+	POST method for auth endpoints
 	"""
-	def post(self, param):
-		print("POST call")
-		auth(param)
-		return None
+	def post(self, req, headers):
+		# parse response and ret json
+		full_url = self.base + req
+		response = requests.post(full_url, headers=headers)
+		json = response.json()
+		return json
 
 	"""
-	GET method for public calls
+	GET method for public endpoints
 	"""
-	def get(self, param):
-		print("GET call")
-		return None
+	def get(self, url):
+		# parse response and ret json
+		response = requests.get(url)
+		json = response.json()
+		return json
 
+
+
+################
+# Main Program
+################
 
 if __name__ == "__main__":
 
@@ -93,14 +105,18 @@ if __name__ == "__main__":
 		print("Usage: Bitfinex.py key.txt")
 		exit()
 
+	# TICKER: get IOTA/USD pair state
+	data = b.get(url)
+	print(json.dumps(data, indent=4))
+
 	# add keys to instance
 	KEY_SECRET_PATH = sys.argv[1]
 	b.add_keys(KEY_SECRET_PATH)
 
-	# generate nonce
-
 	# generate url and request header
-	url, headers = b.auth('account_infos', b.nonce)
+	request, headers = b.auth("account_infos", b.nonce)
+	#print("url = {}".format(url))
+	#print("headers = {}".format(headers))
 
 	####### test nonce, public, secret
 	print(b.nonce)
@@ -110,12 +126,11 @@ if __name__ == "__main__":
 
 
 
-	# TICKER: get IOTA/USD pair state
-	#response = requests.get('https://api.bitfinex.com/v1/pubticker/iotusd')
-	#json_data = response.json()
-	#print(json.dumps(json_data, indent=4))
-
 	# REST AUTHENTICATED ENDPOINTS
+	response = b.post(request, headers)
+	print(response)
+
+
 	#headers = { "X-BFX-APIKEY": "../bitfinex.txt", "X-BFX-PAYLOAD": "../bitfinex.txt", "X-BFX-SIGNATURE": "../bitfinex.txt"}
 	#response = requests.post('https://api.bitfinex.com/v1/account_infos', headers)
 	#json_data = response.json()
