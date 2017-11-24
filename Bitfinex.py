@@ -47,7 +47,7 @@ class BitfinexREST:
 	"""
 	Bitfinex authentication
 	"""
-	def auth(self, endpoint, nonce):
+	def auth(self, endpoint):
 		# create param obj
 		nonce = self.nonce()
 		request = self.ver + endpoint
@@ -142,14 +142,14 @@ if __name__ == "__main__":
 	b.add_keys(KEY_SECRET_PATH)
 
 	# generate url and request header
-	request, headers = b.auth("history", b.nonce)
+	request, headers = b.auth("history")
 
 	# REST AUTHENTICATED ENDPOINTS
 	data = b.post(request, headers)
 	print(json.dumps(data, indent=4))
 
 	# passing bitfinex obj to test module
-	T.test(b)
+	T.run_tests(b)
 
 
 

@@ -5,10 +5,11 @@
 # Author: Brian Lam
 # Platforms: [ Bitfinex ]
 
-def test(client):
+def run_tests(client):
 	b = client
-	print("testing module")
+	print("######### START OF TESTS #########")
 	####### test public key
 	print(b.public_key)
 	#######
+
 
