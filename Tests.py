@@ -13,42 +13,62 @@ import json
 ##################
 # HELPER FUNCTIONS
 ##################
+def stderr_log():
 
+	# grab exception as list of strings
+	exc_type, exc_value, exc_traceback = sys.exc_info()
+	lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
+
+	# write to log
+	f = open("stderr_log.txt", "+a")
+	f.write("\n====================================================\n")
+	for line in lines:
+		f.write(line)
+	f.close()
+
+	print("Failed")
 
 ############
 # MAIN TESTS
 ############
 def run_tests():
 
-	# overwrite old log
+	# overwrite old log content
 	f = open("stderr_log.txt", "w")
 	f.close()
 
 	# init Bitfinex object + add keys to instance
 	b = Bit.BitfinexREST()
-	KEY_SECRET_PATH = sys.argv[1]
-	b.add_keys(KEY_SECRET_PATH)
+	keys = sys.argv[1]
+	b.add_keys(keys)
 
-	print("############# START OF TESTS #############\n")
-	####### test public key
-	print(b.public_key)
-	#######
+	print("############# START TESTS #############")
 
-	print("--> Historical Data: Balance History")
 	try:
+		print("--> Historical Data: Balance History")
 		data = Bit.balance_history(b)
 		print("Passed")
 	except:
-		exc_type, exc_value, exc_traceback = sys.exc_info()
-		lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
-
-		f = open("stderr_log.txt", "+a")
-		for line in lines:
-			f.write(line)
-		f.close()
-
-		print("Failed")
+		stderr_log()
 		pass
 
-	print("############# END OF TESTS #############")
+	try:
+		print("--> Historical Data: Test 2")
+		printf("lololol")
+		print("Passed")
+	except:
+		stderr_log()
+		pass
+
+	try:
+		print("stuff")
+	except:
+		pass
+
+	try:
+		print("stuff")
+	except:
+		pass
+
+	print("############# END TESTS #############")
 
