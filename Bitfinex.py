@@ -93,32 +93,27 @@ class BitfinexREST:
 		json = response.json()
 		return json
 
-class Client:
+# return past trades
+# @param start: start time
+# 		   end: end time
+def get_trade_history(self, start, end):
+	return None
 
-	def __init__ (self):
-		self.temp = None
+# view user trading fees
+def get_balance(self, currency):
+	return None
 
-	# return past trades
-	# @param start: start time
-	# 		   end: end time
-	def get_past_trades(self, start, end):
-		return None
+# view user withdrawal fees
+def get_fees(self):
+	return None
 
-	# view user trading fees
-	def get_balance(self, currency):
-		return None
+# return user deposit address
+def get_deposit_addr(self):
+ 	return None
 
-	# view user withdrawal fees
-	def get_fees(self):
-		return None
-
-	# return user deposit address
-	def get_deposit_addr(self):
-	 	return None
-
-	# return user wallet balance
-	def get_balance(self, wallet_type, currency):
-		return None
+# return user wallet balance
+def get_balance(self, wallet_type, currency):
+	return None
 
 
 ################
@@ -127,12 +122,15 @@ class Client:
 
 if __name__ == "__main__":
 
-	# init Bitfinex restAPI
+	# init Bitfinex object
 	b = BitfinexREST()
 
 	# check program usage
 	if len(sys.argv) < 2:
-		print("Usage: Bitfinex.py key.txt")
+		print("Usage: Bitfinex.py key.txt\n")
+		print("key.txt format:")
+		print("LINE 1: public key")
+		print("LINE 2: private key")
 		exit()
 
 	# TICKER: get IOTA/USD pair state
@@ -150,7 +148,7 @@ if __name__ == "__main__":
 	data = b.post(request, headers)
 	print(json.dumps(data, indent=4))
 
-	# passing client obj to test module
+	# passing bitfinex obj to test module
 	T.test(b)
 
 

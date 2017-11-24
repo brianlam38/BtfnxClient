@@ -8,9 +8,7 @@
 def test(client):
 	b = client
 	print("testing module")
-	####### test nonce, public, secret
-	print(b.nonce)
+	####### test public key
 	print(b.public_key)
-	print(b.secret_key)
 	#######
 
