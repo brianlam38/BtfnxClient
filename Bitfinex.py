@@ -96,26 +96,42 @@ class BitfinexREST:
 		json = response.json()
 		return json
 
-# return past trades
-# @param start: start time
-# 		   end: end time
-def get_trade_history(self, start, end):
+##################
+# Public Endpoints
+##################
+
+# view current best bid-ask, last trade price, daily volume, price movement.
+def get_ticker():
 	return None
 
-# view user trading fees
-def get_balance(self, currency):
+# view volume over a 1-7-30 day period.
+def get_stats():
 	return None
 
-# view user withdrawal fees
-def get_fees(self):
+# view full margin funding book.
+def get_funding_book():
 	return None
 
-# return user deposit address
-def get_deposit_addr(self):
+# view full order book.
+def get_order_book():
+	return None
+
+# view most recent trades.
+# default: 50 items
+def get_trades():
  	return None
 
-# return user wallet balance
-def get_balance(self, wallet_type, currency):
+# view list of most recent funding data.
+# default: 50 items
+def get_lends():
+	return None
+
+# view list of symbol names
+def get_symbols():
+	return None
+
+# view list of symbol details
+def get_symbol_details():
 	return None
 
 #########################

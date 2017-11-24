@@ -15,16 +15,16 @@ import json
 ##################
 def stderr_log():
 
-	# grab exception as list of strings
+	# grab exception/stack-trace as list of strings
 	exc_type, exc_value, exc_traceback = sys.exc_info()
 	lines = traceback.format_exception(exc_type, exc_value, exc_traceback)
 
-	# write to log
+	# write stack-trace to log
 	f = open("stderr_log.txt", "+a")
-	f.write("\n====================================================\n")
 	for line in lines:
 		f.write(line)
 	f.close()
+	f.write("\n====================================================\n")
 
 	print("Failed")
 
