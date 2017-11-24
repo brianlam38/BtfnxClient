@@ -1,3 +1,3 @@
 # BtfnxClient
 
-A Bitfinex REST API Python Client
+A Python Client for Bitfinex REST API.
