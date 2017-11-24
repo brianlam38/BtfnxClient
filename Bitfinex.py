@@ -48,9 +48,12 @@ class BitfinexREST:
 	Bitfinex authentication
 	"""
 	def auth(self, endpoint):
-		# create param obj
+
+		# generate nonce and request
 		nonce = self.nonce()
 		request = self.ver + endpoint
+
+		# create param obj
 		param_obj = {
 			'nonce': nonce,
 			'request': request,
@@ -115,15 +118,28 @@ def get_deposit_addr(self):
 def get_balance(self, wallet_type, currency):
 	return None
 
+#########################
+# Authenticated Endpoints
+#########################
+
+# Historical Data - Balance History
+def balance_history(client):
+	# generate url and request header
+	request, headers = client.auth("hitory")
+
+	# access endpoint
+	data = client.post(request, headers)
+
+	# print(json.dumps(data, indent=4))
+
+	return data
+
 
 ################
 # Main Program
 ################
 
 if __name__ == "__main__":
-
-	# init Bitfinex object
-	b = BitfinexREST()
 
 	# check program usage
 	if len(sys.argv) < 2:
@@ -137,19 +153,8 @@ if __name__ == "__main__":
 	#data = b.get(url)
 	#print(json.dumps(data, indent=4))
 
-	# add keys to instance
-	KEY_SECRET_PATH = sys.argv[1]
-	b.add_keys(KEY_SECRET_PATH)
-
-	# generate url and request header
-	request, headers = b.auth("history")
-
-	# REST AUTHENTICATED ENDPOINTS
-	data = b.post(request, headers)
-	print(json.dumps(data, indent=4))
-
 	# passing bitfinex obj to test module
-	T.run_tests(b)
+	T.run_tests()
 
 
 
